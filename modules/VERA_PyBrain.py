@@ -3,7 +3,7 @@ import scipy.io as scio
 import numpy as np
 import matplotlib.pyplot as plt
 import pyvista as pv
-
+from functions import functions as f
 # from pyvista import plotting
 
 class VERA_PyBrain():
@@ -15,6 +15,7 @@ class VERA_PyBrain():
         else:
             self.subject = None
         self._loadMat(path)
+        self.funcs = f()
     def _loadMat(self,fp:Path):
         self.brainType = fp.name.split('.')[0]
         attrNames = []
@@ -61,14 +62,20 @@ class VERA_PyBrain():
             # plotter = pv.Plotter()
             # plotter.add_mesh(cloud, smooth_shading=False)
             # plotter.show()
-            T = self.cortex.tri
+            tris = self.cortex.tri
+            tris.sort(axis=0)
             verts = self.cortex.vert
-            faces = np.hstack((np.full((len(T),1),3, dtype=np.int32),T))
-            cloud = pv.PolyData(verts,faces.flatten())
+            faces = np.hstack((np.full((len(tris),1),3, dtype=np.int32),tris))
+            # tris = tris[0:int(len(tris)/2)]
+            testFace = self.funcs.flattenCells(tris)
+            # testFace = [3,1,2,3]
+            cloud = pv.PolyData(verts,testFace)
+            mesh = pv.PolyData(verts)
+            cloud = pv.PolyData.from_regular_faces(verts,tris)
             # mesh.plot(show_edges=True, color=True)
-            subdiv = cloud.subdivide(nsub=1, subfilter='linear')
-            # subdiv.compute_normals(cell_normals=False, inplace=True)
-            # subdiv.plot(smooth_shading=False)
+            # subdiv = cloud.subdivide(nsub=1, subfilter='linear')
+            # subdiv.compute_normals(cell_normals=True, inplace=True)
+            # subdiv.plot(smooth_shading=True)
 
             # cloud = cloud.subdivide(nsub=1, subfilter='linear')
             # cloud.compute_normals(inplace=True)

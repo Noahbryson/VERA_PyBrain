@@ -66,12 +66,12 @@ class VERA_PyBrain():
             faces = np.hstack((np.full((len(T),1),3, dtype=np.int32),T))
             cloud = pv.PolyData(verts,faces.flatten())
             # mesh.plot(show_edges=True, color=True)
-            subdiv = cloud.subdivide(nsub=1, subfilter='linear')
+            # subdiv = cloud.subdivide(nsub=1, subfilter='linear')
             # subdiv.compute_normals(cell_normals=False, inplace=True)
             # subdiv.plot(smooth_shading=False)
 
             # cloud = cloud.subdivide(nsub=1, subfilter='linear')
-            # cloud.compute_normals(inplace=True)
+            cloud.compute_normals(inplace=True)
             cloud.plot(smooth_shading=False)
 
 
@@ -107,8 +107,8 @@ class VERA_component():
                 
 
 if __name__ == '__main__':
-    # loc = r'C:\Users\nbrys\Box\Brunner Lab\DATA\SCAN_Mayo\BJH041\brain\brain_MNI.mat'
-    loc = r'/Users/nkb/Library/CloudStorage/Box-Box/Brunner Lab/DATA/SCAN_Mayo/BJH041/brain/brain_MNI.mat'
+    loc = r'C:\Users\nbrys\Box\Brunner Lab\DATA\SCAN_Mayo\BJH041\brain\brain_MNI.mat'
+    # loc = r'/Users/nkb/Library/CloudStorage/Box-Box/Brunner Lab/DATA/SCAN_Mayo/BJH041/brain/brain_MNI.mat'
     vera = VERA_PyBrain(loc)
     vera.listAttributes()
     ax,engine = vera.generateAxis(engine='pyvista')

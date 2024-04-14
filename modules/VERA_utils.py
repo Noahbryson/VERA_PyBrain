@@ -20,9 +20,15 @@ class loadVERA():
                   print('error loading brain :(')
             else:
                   print('brain loaded successfully yay')
+                  self.__reindex_matricies__()
             finally:
                   self.attrNames = attrNames
                   print('module complete, attributes stored')
+            
+
+      def __reindex_matricies__(self):
+           self.cortex.tri = self.cortex.tri -1
+                
 
 class VERA_component():
     """class that recurses through dictionaries to make them into object variables rather than string keys for continuity with MATLAB struct interface"""

@@ -69,41 +69,28 @@ class VERA_PyBrain(loadVERA):
             ax = plt.figure(figname).add_subplot(111,projection='3d')
         return  ax,engine
 
-    def plotAllVolumes(self, ax:plt.axes,engine:str='matplotlib'):
+    def plotAllVolumes(self, ax,engine:str='matplotlib'):
         if engine == 'pyvista':
-            # faces = np.concatenate((3*np.ones([len(self.cortex.tri), 1]), self.cortex.tri), axis=1)
-            # faces = faces.astype(np.int32).flatten()
-            # vertices = self.cortex.vert
-            # cloud = pv.PolyData(vertices, faces)
-            # # cloud.plot(show_edges=True, color=True)
-            # plotter = pv.Plotter()
-            # plotter.add_mesh(cloud, smooth_shading=False)
-            # plotter.show()
+
             tris = self.cortex.tri
-            tris.sort(axis=0)
             verts = self.cortex.vert
-            faces = np.hstack((np.full((len(tris),1),3, dtype=np.int32),tris))
-            # tris = tris[0:int(len(tris)/2)]
-            testFace = self.funcs.flattenCells(tris)
-            # testFace = [3,1,2,3]
-            cloud = pv.PolyData(verts,testFace)
-            mesh = pv.PolyData(verts)
-            cloud = pv.PolyData.from_regular_faces(verts,tris)
+            faces = self.funcs.flattenCells(tris)
+            cloud = pv.PolyData(verts,faces)
             # mesh.plot(show_edges=True, color=True)
-            # subdiv = cloud.subdivide(nsub=1, subfilter='linear')
-            # subdiv.compute_normals(cell_normals=True, inplace=True)
-            # subdiv.plot(smooth_shading=True)
+            subdiv = cloud.subdivide(nsub=1, subfilter='linear')
+            subdiv.compute_normals(cell_normals=True, inplace=True)
+            ax.add_mesh(subdiv,smooth_shading=True)
 
             # cloud = cloud.subdivide(nsub=1, subfilter='linear')
             # cloud.compute_normals(inplace=True)
-            cloud.plot(smooth_shading=False)
+            # cloud.plot(smooth_shading=False)
 
 
             print('setup')
 
 
 
-            return cloud
+            return ax
         else:
             "default matplotlib engine"
             x = self.cortex.vert[:,0]
@@ -115,7 +102,8 @@ class VERA_PyBrain(loadVERA):
         
     def show(self, engine = 'pyvista',**kwargs):
         if engine == 'pyvista':
-            pass
+            # ax.export_obj('pv.obj')
+            ax.show()
         else:
             "default matplotlib engine"
             plt.show()
@@ -124,13 +112,13 @@ class VERA_PyBrain(loadVERA):
                 
 
 if __name__ == '__main__':
-    # loc = r'C:\Users\nbrys\Box\Brunner Lab\DATA\SCAN_Mayo\BJH041\brain\brain_MNI.mat'
-    loc = r'/Users/nkb/Library/CloudStorage/Box-Box/Brunner Lab/DATA/SCAN_Mayo/BJH046/brain/brain_MNI.mat'
+    loc = r'C:\Users\nbrys\Box\Brunner Lab\DATA\SCAN_Mayo\BJH041\brain\brain_MNI.mat'
+    # loc = r'/Users/nkb/Library/CloudStorage/Box-Box/Brunner Lab/DATA/SCAN_Mayo/BJH046/brain/brain_MNI.mat'
     vera = VERA_PyBrain(loc)
     vera.listAttributes()
-    # ax,engine = vera.generateAxis(engine='pyvista')
-    ax,engine = vera.generateAxis()
+    ax,engine = vera.generateAxis(engine='pyvista')
+    # ax,engine = vera.generateAxis()
 
     # ax,engine = vera.generateAxis()
     vera.plotAllVolumes(ax,engine)
-    vera.show(engine=engine)
+    vera.show(engine=engine,ax=ax)

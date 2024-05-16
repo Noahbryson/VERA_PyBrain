@@ -2,11 +2,15 @@ import scipy.io as scio
 from pathlib import Path
 import csv
 import os
+import glob
 
 class loadVERA():
-      def __init__(self,fp:Path):
-            self.brainType = fp.name.split('.')[0]
+      def __init__(self,fpath:Path,brainName:str='brain'):
+            self.subjectRoot = fpath.parent
+            self.brainDir = fpath
+            self.brainType = brainName
             attrNames = []
+            fp = self.brainDir / f'{brainName}.mat'
             try:
                   temp = scio.loadmat(fp,mat_dtype=True,simplify_cells=True)
                   for k,v in sorted(temp.items()):
@@ -42,7 +46,7 @@ class VERA_component():
                 
 def VERA_rosamap(fp:Path|str) -> list:
       if os.path.exists(fp):
-            with open(fp,'r') as file:
+            with open(fp,'r',encoding='utf-8-sig') as file:
                   reader = csv.reader(file)
                   return [r for r in reader]
       else:

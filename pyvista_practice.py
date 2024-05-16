@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pyvista as pv
-from modules.functions import functions
+from modules.helper_functions import functions
 
 
 funcs = functions()
